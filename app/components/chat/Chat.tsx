@@ -5,12 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Microphone } from "../microphone/microphone";
 import { useChat } from "ai/react";
-import { playAudio } from "@/app/actions/playAudioAction";
+import { deleteVocal } from "@/app/serverActions/deleteVocal";
 
-export default function Chat() {
+export const Chat = () => {
   const sessionIdRef = useRef<string>(uuidv4());
   const { startRecording, stopRecording, text } = useRecordVoice();
   const [vocalId, setVocalId] = useState<string>(uuidv4());
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     console.log(sessionIdRef.current);
@@ -25,6 +26,7 @@ export default function Chat() {
     const input = text.trim();
     if (text) {
       append({ role: "user", content: input }, { data: { vocalId: vocalId } });
+      setLoading(true);
     }
   }, [text]);
 
@@ -32,20 +34,21 @@ export default function Chat() {
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.role === "assistant") {
-        playAudio(`/audio/speech_${vocalId}.mp3`);
-        setVocalId(uuidv4());
-        fetch("/api/deleteVocal", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            vocalId: vocalId,
-          }),
+        const audio = new Audio(`/audio/speech_${vocalId}.mp3`);
+        audio.addEventListener("ended", () => {
+          audio.remove();
+          serverDeleteVocal(vocalId)
         });
+        audio.play();
+        setVocalId(uuidv4());
+        setLoading(false);
       }
     }
   }, [messages]);
+
+  const serverDeleteVocal = async (vocalId: string) => {
+    await deleteVocal(vocalId);
+  }
 
   return (
     <div className="mx-auto  w-full max-w-xl  flex flex-col stretchrounded-xl gap-5">
@@ -72,6 +75,7 @@ export default function Chat() {
       <Microphone
         startRecording={startRecording}
         stopRecording={stopRecording}
+        loading={loading}
       />
     </div>
   );

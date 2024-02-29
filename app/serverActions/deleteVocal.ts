@@ -1,9 +1,9 @@
+"use server";
+
 import path from "path";
 import fs from "fs";
-import { NextResponse } from "next/server";
 
-export async function POST(req: Request){
-    const { vocalId } = await req.json();
+export const deleteVocal = async (vocalId: string) => {
     const speechFile = path.resolve(`./public/audio/speech_${vocalId}.mp3`);
     try {
         await fs.promises.access(speechFile);
@@ -12,5 +12,4 @@ export async function POST(req: Request){
     } catch (error) {
         console.log(`Le fichier ${speechFile} n'existe pas.`);
     }
-    return NextResponse.json({ routeMp3: speechFile });
 }

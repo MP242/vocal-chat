@@ -3,7 +3,6 @@ import clientPromise from "@/app/libs/mongodb";
 export async function saveMessageToDatabase(role:string,id:string, currentMessageContent:string) {
   try {
     const client = await clientPromise;
-    await client.connect();
     const collection = client.db(process.env.BDD_NAME!).collection(process.env.COLLECTION_NAME!);
     await collection.insertOne({
       role: role,

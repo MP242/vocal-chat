@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 interface MicrophoneProps {
   startRecording: () => void;
   stopRecording: () => void;
+  loading: boolean;
 }
 
-export const Microphone = ({startRecording,stopRecording}:MicrophoneProps) => {
+export const Microphone = ({startRecording,stopRecording,loading}:MicrophoneProps) => {
   const [isRecording, setIsRecording] = useState(false);
 
 
   useEffect(() => {
+    if(!loading){
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Enter" && !isRecording) {
         setIsRecording(true);
@@ -32,7 +34,7 @@ export const Microphone = ({startRecording,stopRecording}:MicrophoneProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-    };
+    };}
   }, [startRecording,stopRecording]);
 
   return (
@@ -41,8 +43,11 @@ export const Microphone = ({startRecording,stopRecording}:MicrophoneProps) => {
         className={`border-none h-[100px] w-[100px] rounded-full ${
           isRecording ? "bg-gray-900" : "bg-gray-200"
         }`}
+        disabled={loading}
       >
-        <p className="text-[50px] rounded-full ">🎙️</p>
+        <p className="text-[50px] rounded-full ">
+         {loading? "❌" : "🎙️"} 
+        </p>
       </button>
     </div>
   );

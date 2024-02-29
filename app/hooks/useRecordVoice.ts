@@ -2,6 +2,7 @@
 import { blobToBase64 } from "@/app/actions/blobToBase64Action";
 import { createMediaStream } from "@/app/actions/createMediaStreamAction";
 import { useEffect, useState, useRef } from "react";
+import { speechToText } from "../serverActions/speechToText";
 
 
 export const useRecordVoice = () => {
@@ -29,16 +30,7 @@ export const useRecordVoice = () => {
 
   const getText = async (base64data:string) => {
     try {
-      const response = await fetch("/api/speechToText", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          audio: base64data,
-        }),
-      }).then((res) => res.json());
-      const { text } = response;
+      const text:string= await speechToText(base64data);
       setText(text);
     } catch (error) {
       console.log(error);

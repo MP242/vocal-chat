@@ -2,8 +2,9 @@ import { ChatOllama } from "@langchain/community/chat_models/ollama";
 import formatPreviousMessages from "@/app/actions/formatMessageAction";
 import { MongoDBChatMessageHistory } from "@langchain/mongodb";
 import { saveMessageToDatabase } from "@/app/actions/historyToMongoAction";
-import { PromptTemplate } from "langchain/prompts";
+import { PromptTemplate } from "@langchain/core/prompts";
 import { NextResponse } from "next/server";
+import { textToSpeech } from "@/app/serverActions/textToSpeech";
 
 //si trop de d'hallucination, je peux faire une sequentialChain
 //chain 1 répond à la question.
@@ -26,16 +27,16 @@ export async function POST(req: Request) {
   const currentMessageContent = messages[messages.length - 1].content;
   const currentMessageRole = messages[messages.length - 1].role;
 
-  //a remplacer par MongoDBChatMessageHistory
-  if(messages.length > 1){
-    const previousAiMessageContent = messages[messages.length - 2].content;
-    const previousAiMessagerole = messages[messages.length - 2].role;
-    console.log("previousMessageContent", previousAiMessageContent);
-    console.log("previousAiMessagerole", previousAiMessagerole);
-    await saveMessageToDatabase(previousAiMessagerole,id, previousAiMessageContent);
-  }
-
-  await saveMessageToDatabase(currentMessageRole,id, currentMessageContent);
+  // //a remplacer par MongoDBChatMessageHistory
+  // if(messages.length > 1){
+  //   const previousAiMessageContent = messages[messages.length - 2].content;
+  //   const previousAiMessagerole = messages[messages.length - 2].role;
+  //   console.log("previousMessageContent", previousAiMessageContent);
+  //   console.log("previousAiMessagerole", previousAiMessagerole);
+  //   await saveMessageToDatabase(previousAiMessagerole,id, previousAiMessageContent);
+  // }
+  // //a remplacer par MongoDBChatMessageHistory
+  // await saveMessageToDatabase(currentMessageRole,id, currentMessageContent);
 
   const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
@@ -52,18 +53,10 @@ export async function POST(req: Request) {
   });
   
   const llmResponse = stream.content.toString().trim();
-  
 
-  const urlVoice = await fetch(process.env.NEXT_PUBLIC_BASE_URL+"/api/textToSpeetch", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      text: llmResponse,
-      id: data.vocalId,
-    }),
-  });
+  const urlVoice = await textToSpeech(llmResponse, data.vocalId);
+
+  console.log("urlVoiceJson", urlVoice);
 
   return new NextResponse(llmResponse);
 }
