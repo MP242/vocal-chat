@@ -1,4 +1,4 @@
-import clientPromise from "@/libs/mongodb";
+import clientPromise from "@/app/libs/mongodb";
 
 export async function saveMessageToDatabase(role:string,id:string, currentMessageContent:string) {
   try {
