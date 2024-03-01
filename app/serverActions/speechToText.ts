@@ -2,7 +2,14 @@
 
 import OpenAI from "openai";
 import fs from "fs";
-import { Readable } from "stream";
+import path from "path";
+
+const dirPath = path.join(__dirname, 'public/audio');
+
+// Vérifier si le répertoire existe, sinon le créer
+if (!fs.existsSync(dirPath)){
+    fs.mkdirSync(dirPath, { recursive: true });
+}
 
 export const speechToText = async (base64Audio: string): Promise<string> => {
   try {
