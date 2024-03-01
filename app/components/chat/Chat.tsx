@@ -23,8 +23,9 @@ export const Chat = () => {
   });
 
   useEffect(() => {
-    const input = text.trim();
+    console.log("L26 chatCompo - text", text)
     if (text) {
+      const input = text.trim();
       append({ role: "user", content: input }, { data: { vocalId: vocalId } });
       setLoading(true);
     }
