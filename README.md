@@ -1,8 +1,22 @@
-## Recommandation de Marc
-- Creer une base de données MongoDB et une collection à renseigner dans le .env.local pour sauvegarder les messages avec le bot.
-- Utilisateur Mac :
-    - installer ffmpg - brew install ffmpg
-    - installer sox (microphone) - brew install sox
+![Alt text](./public/image.png)
+
+## Comment l'utiliser ?
+- Autoriser l'accès au microphone.
+- Maintenir enfoncée la touche d'enregistrement vocal pendant toute la durée de l'enregistrement.
+- Relâcher la touche pour terminer l'enregistrement.
+- Attendre la réponse.
+
+# Techno 
+- NextJS 14
+- MongoDB (chatHistory)
+- serverAction
+- ai/react
+- STT / TTS avec openAI
+
+## Prochaines étapes
+- STT / TTS avec hugginFace
+- ou déployer un fastAPI serveur en python utilisant coqui-ai
+- Version responsive/mobile 
 
 ## A voir plus tard
 - react-speech-recognition (mais pas supporté sur tous les navigateurs)
