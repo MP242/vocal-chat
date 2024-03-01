@@ -23,11 +23,11 @@ export const speechToText = async (base64Audio: string): Promise<string> => {
       file: readStream,
       model: "whisper-1",
     });
-
+    console.log("data.text", data.text);
     // Remove the temporary file after successful processing
     fs.unlinkSync(filePath);
-    const { text } = data;
-    return text;
+
+    return data.text;
   } catch (error: any) {
     console.error("Error processing audio:", error);
     return error;
