@@ -27,21 +27,25 @@ export async function POST(req: Request) {
     const currentMessageContent = messages[messages.length - 1].content;
     const currentMessageRole = messages[messages.length - 1].role;
 
-    // //a remplacer par MongoDBChatMessageHistory
-    // if(messages.length > 1){
-    //   const previousAiMessageContent = messages[messages.length - 2].content;
-    //   const previousAiMessagerole = messages[messages.length - 2].role;
-    //   console.log("previousMessageContent", previousAiMessageContent);
-    //   console.log("previousAiMessagerole", previousAiMessagerole);
-    //   await saveMessageToDatabase(previousAiMessagerole,id, previousAiMessageContent);
-    // }
-    // //a remplacer par MongoDBChatMessageHistory
-    // await saveMessageToDatabase(currentMessageRole,id, currentMessageContent);
+    //a remplacer par MongoDBChatMessageHistory
+    if (messages.length > 1) {
+      const previousAiMessageContent = messages[messages.length - 2].content;
+      const previousAiMessagerole = messages[messages.length - 2].role;
+      console.log("previousMessageContent", previousAiMessageContent);
+      console.log("previousAiMessagerole", previousAiMessagerole);
+      await saveMessageToDatabase(
+        previousAiMessagerole,
+        id,
+        previousAiMessageContent
+      );
+    }
+    //a remplacer par MongoDBChatMessageHistory
+    await saveMessageToDatabase(currentMessageRole, id, currentMessageContent);
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
     const model = new ChatOllama({
-      baseUrl: process.env.NEXT_PUBLIC_API_URL,
+      baseUrl: process.env.OLLAMA_URL,
       model: process.env.MODEL_NAME,
     });
 

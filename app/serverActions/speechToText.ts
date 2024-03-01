@@ -1,19 +1,9 @@
 "use server";
 
-import OpenAI, {toFile} from "openai";
-import fs from "fs";
-import path from "path";
-
-const dirPath = path.join(__dirname, 'public/audio');
-
-// Vérifier si le répertoire existe, sinon le créer
-if (!fs.existsSync(dirPath)){
-    fs.mkdirSync(dirPath, { recursive: true });
-}
+import OpenAI, { toFile } from "openai";
 
 export const speechToText = async (base64Audio: string): Promise<string> => {
   try {
-    console.log("server --> base64Audio", base64Audio)
     const openai = new OpenAI();
 
     const audioBuffer = Buffer.from(base64Audio, "base64");
