@@ -14,7 +14,7 @@ export const Chat = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log(sessionIdRef.current);
+    // console.log(sessionIdRef.current);
     sessionIdRef.current = uuidv4();
   }, []);
 
@@ -23,7 +23,7 @@ export const Chat = () => {
   });
 
   useEffect(() => {
-    console.log("L26 chatCompo - text", text);
+    // console.log("L26 chatCompo - text", text);
     if (text) {
       const input = text.trim();
       append({ role: "user", content: input }, { data: { vocalId: vocalId } });
@@ -37,7 +37,6 @@ export const Chat = () => {
       if (lastMessage.role === "assistant") {
         serverCreateVocal(lastMessage.content).then(Res => {
           const { decodedBuffer } = Res;
-          console.log("decodedBuffer", decodedBuffer);
 
           const buffer = new Uint8Array(decodedBuffer);
 
