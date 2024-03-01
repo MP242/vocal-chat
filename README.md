@@ -152,6 +152,16 @@ To set up the project locally, follow these simple instructions.
     From langsmith dashboard !
     ```js
     LANGCHAIN_PROJECT = 'ENTER YOUR LANGCHAIN_PROJECT';
+
+11. Start the project ! <br>
+    For a launch in development mode
+    ```js
+    npm run dev
+    ```
+    For a launch in prod mode
+    ```js
+    npm run build
+    npm run start
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
