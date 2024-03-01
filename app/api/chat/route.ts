@@ -1,19 +1,10 @@
-"use server";
-
-import { StreamingTextResponse, Message } from "ai";
 import { ChatOllama } from "@langchain/community/chat_models/ollama";
-import { BytesOutputParser } from "@langchain/core/output_parsers";
-import clientPromise from "@/libs/mongodb";
-import promptTemplate from "@/actions/promptActions";
-import formatPreviousMessages from "@/actions/formatMessageAction";
-import { BufferMemory } from "langchain/memory";
+import formatPreviousMessages from "@/app/actions/formatMessageAction";
 import { MongoDBChatMessageHistory } from "@langchain/mongodb";
-import { LLMChain } from "langchain/chains";
-import { saveMessageToDatabase } from "@/actions/historyToMongoActions";
-
-// export const runtime = "edge";
-
-
+import { saveMessageToDatabase } from "@/app/actions/historyToMongoAction";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { NextResponse } from "next/server";
+import { textToSpeech } from "@/app/serverActions/textToSpeech";
 
 //si trop de d'hallucination, je peux faire une sequentialChain
 //chain 1 répond à la question.
@@ -27,49 +18,45 @@ Conversation en cours :
 
 question: {input}`;
 
-
 export async function POST(req: Request) {
-  console.log(process.env.API_URL);
-  console.log(process.env.MODEL_NAME);
-
-  const { messages, id } = await req.json();
-  console.log("mes messages", messages);
-  console.log("id", id);
+  const myReq = await req.json();
+  console.log("myReq", myReq);
+  const { messages, id, data } = myReq;
 
   const formattedPreviousMessages = await formatPreviousMessages(messages);
-  console.log("formattedPreviousMessages", formattedPreviousMessages);
   const currentMessageContent = messages[messages.length - 1].content;
-  const currentMessageRole= messages[messages.length - 1].role;
-  console.log("currentMessageContent", currentMessageContent);
+  const currentMessageRole = messages[messages.length - 1].role;
 
-  if(messages.length > 1){
-    const previousAiMessageContent = messages[messages.length - 2].content;
-    const previousAiMessagerole = messages[messages.length - 2].role;
-    console.log("previousMessageContent", previousAiMessageContent);
-    console.log("previousAiMessagerole", previousAiMessagerole);
-    await saveMessageToDatabase(previousAiMessagerole,id, previousAiMessageContent);
-  }
+  // //a remplacer par MongoDBChatMessageHistory
+  // if(messages.length > 1){
+  //   const previousAiMessageContent = messages[messages.length - 2].content;
+  //   const previousAiMessagerole = messages[messages.length - 2].role;
+  //   console.log("previousMessageContent", previousAiMessageContent);
+  //   console.log("previousAiMessagerole", previousAiMessagerole);
+  //   await saveMessageToDatabase(previousAiMessagerole,id, previousAiMessageContent);
+  // }
+  // //a remplacer par MongoDBChatMessageHistory
+  // await saveMessageToDatabase(currentMessageRole,id, currentMessageContent);
 
-  await saveMessageToDatabase(currentMessageRole,id, currentMessageContent);
-
-  const prompt = await promptTemplate(TEMPLATE);
+  const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
   const model = new ChatOllama({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
     model: process.env.MODEL_NAME,
   });
 
-  const outputParser = new BytesOutputParser();
+  const chain = prompt.pipe(model);
 
-  // const chain = new LLMChain({ llm: model, prompt,memory ,outputParser });
-  const chain = prompt.pipe(model).pipe(outputParser);
-
-  const stream = await chain.stream({
+  const stream = await chain.invoke({
     chat_history: formattedPreviousMessages.join('\n'),
     input: currentMessageContent,
   });
+  
+  const llmResponse = stream.content.toString().trim();
 
-  return new StreamingTextResponse(stream);
+  const urlVoice = await textToSpeech(llmResponse, data.vocalId);
 
-  // return new Response("hello world");
+  console.log("urlVoiceJson", urlVoice);
+
+  return new NextResponse(llmResponse);
 }

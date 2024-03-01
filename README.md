@@ -1,3 +1,13 @@
+## Recommandation de Marc
+- Creer une base de données MongoDB et une collection à renseigner dans le .env.local pour sauvegarder les messages avec le bot.
+- Utilisateur Mac :
+    - installer ffmpg - brew install ffmpg
+    - installer sox (microphone) - brew install sox
+
+## A voir plus tard
+- react-speech-recognition (mais pas supporté sur tous les navigateurs)
+- react-speech-kit ()
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

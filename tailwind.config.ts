@@ -39,6 +39,9 @@ const config: Config = {
       maxWidth: {
         '50': '50rem',
       },
+      padding:{
+        'px-24': '0 24px',
+      }
       // fontSize: {
       //   "10": "1rem", // Correspond à 10px avec un font-size de 62.5%
       //   "h1": "62px",
