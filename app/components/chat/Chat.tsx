@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Microphone } from "../microphone/microphone";
 import { useChat } from "ai/react";
-import { deleteVocal } from "@/app/serverActions/deleteVocal";
+import { textToSpeech } from "@/app/serverActions/textToSpeech";
 
 export const Chat = () => {
   const sessionIdRef = useRef<string>(uuidv4());
@@ -23,7 +23,7 @@ export const Chat = () => {
   });
 
   useEffect(() => {
-    console.log("L26 chatCompo - text", text)
+    console.log("L26 chatCompo - text", text);
     if (text) {
       const input = text.trim();
       append({ role: "user", content: input }, { data: { vocalId: vocalId } });
@@ -35,21 +35,33 @@ export const Chat = () => {
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.role === "assistant") {
-        const audio = new Audio(`/audio/speech_${vocalId}.mp3`);
-        audio.addEventListener("ended", () => {
-          audio.remove();
-          serverDeleteVocal(vocalId)
+        serverCreateVocal(lastMessage.content).then(Res => {
+          const { decodedBuffer } = Res;
+          console.log("decodedBuffer", decodedBuffer);
+
+          const buffer = new Uint8Array(decodedBuffer);
+
+          const blob = new Blob([buffer], { type: 'audio/mpeg' });
+          // Créer un objet URL pour le Blob
+          const audioURL = URL.createObjectURL(blob);
+          // Créer un élément audio et configurer sa source
+          const audio = new Audio(audioURL);
+          // Lecture de l'audio
+          audio.play();
+
+          setVocalId(uuidv4());
+          setLoading(false);
+        }).catch(error => {
+          console.error("Error decoding audio buffer:", error);
         });
-        audio.play();
-        setVocalId(uuidv4());
-        setLoading(false);
       }
     }
   }, [messages]);
 
-  const serverDeleteVocal = async (vocalId: string) => {
-    await deleteVocal(vocalId);
-  }
+  const serverCreateVocal = async (text: string) => {
+    const response = await textToSpeech(text);
+    return response;
+  };
 
   return (
     <div className="mx-auto  w-full max-w-xl  flex flex-col stretchrounded-xl gap-5">
@@ -73,6 +85,7 @@ export const Chat = () => {
             ))
           : null}
       </div>
+      {loading && <p>Loading...</p>}
       <Microphone
         startRecording={startRecording}
         stopRecording={stopRecording}
@@ -80,4 +93,4 @@ export const Chat = () => {
       />
     </div>
   );
-}
+};

@@ -1,28 +1,19 @@
 "use server";
 
 import OpenAI from "openai";
-import fs from "fs";
-import path from "path";
 
-export const textToSpeech = async (text: string, vocalId: string) => {
+export const textToSpeech = async (text: string) => {
   try {
     const openai = new OpenAI();
-
-    console.log("text", text);
-
-    const speechFile = path.resolve(`./public/audio/speech_${vocalId}.mp3`);
-
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
       voice: "alloy",
       input: text,
     });
+    const buffer = await mp3.arrayBuffer();
+    const decodedBuffer = Array.from(new Uint8Array(buffer))
 
-    const buffer = Buffer.from(await mp3.arrayBuffer());
-    await fs.promises.writeFile(speechFile, buffer);
-    console.log(`Le fichier ${speechFile} a été créé depuis le backend.`);
-
-    return speechFile;
+    return { decodedBuffer: decodedBuffer }
   } catch (error: any) {
     console.error("Error processing audio:", error);
     return error;
