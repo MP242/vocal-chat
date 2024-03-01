@@ -33,7 +33,9 @@ export const useRecordVoice = () => {
       const text= await speechToText(base64data);
 
       console.log("from useRecordVoice text",text)
-      setText(text);
+      const monText = text.toString();
+      console.log("from useRecordVoice monText",monText)
+      setText(monText);
     } catch (error) {
       console.log(error);
     }
