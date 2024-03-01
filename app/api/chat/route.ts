@@ -19,44 +19,54 @@ Conversation en cours :
 question: {input}`;
 
 export async function POST(req: Request) {
-  const myReq = await req.json();
-  console.log("myReq", myReq);
-  const { messages, id, data } = myReq;
+  try {
+    const myReq = await req.json();
+    console.log("myReq", myReq);
+    const { messages, id, data } = myReq;
 
-  const formattedPreviousMessages = await formatPreviousMessages(messages);
-  const currentMessageContent = messages[messages.length - 1].content;
-  const currentMessageRole = messages[messages.length - 1].role;
+    const formattedPreviousMessages = await formatPreviousMessages(messages);
+    const currentMessageContent = messages[messages.length - 1].content;
+    const currentMessageRole = messages[messages.length - 1].role;
 
-  // //a remplacer par MongoDBChatMessageHistory
-  // if(messages.length > 1){
-  //   const previousAiMessageContent = messages[messages.length - 2].content;
-  //   const previousAiMessagerole = messages[messages.length - 2].role;
-  //   console.log("previousMessageContent", previousAiMessageContent);
-  //   console.log("previousAiMessagerole", previousAiMessagerole);
-  //   await saveMessageToDatabase(previousAiMessagerole,id, previousAiMessageContent);
-  // }
-  // //a remplacer par MongoDBChatMessageHistory
-  // await saveMessageToDatabase(currentMessageRole,id, currentMessageContent);
+    // //a remplacer par MongoDBChatMessageHistory
+    // if(messages.length > 1){
+    //   const previousAiMessageContent = messages[messages.length - 2].content;
+    //   const previousAiMessagerole = messages[messages.length - 2].role;
+    //   console.log("previousMessageContent", previousAiMessageContent);
+    //   console.log("previousAiMessagerole", previousAiMessagerole);
+    //   await saveMessageToDatabase(previousAiMessagerole,id, previousAiMessageContent);
+    // }
+    // //a remplacer par MongoDBChatMessageHistory
+    // await saveMessageToDatabase(currentMessageRole,id, currentMessageContent);
 
-  const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+    const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
-  const model = new ChatOllama({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL,
-    model: process.env.MODEL_NAME,
-  });
+    const model = new ChatOllama({
+      baseUrl: process.env.NEXT_PUBLIC_API_URL,
+      model: process.env.MODEL_NAME,
+    });
 
-  const chain = prompt.pipe(model);
+    const chain = prompt.pipe(model);
 
-  const stream = await chain.invoke({
-    chat_history: formattedPreviousMessages.join('\n'),
-    input: currentMessageContent,
-  });
-  
-  const llmResponse = stream.content.toString().trim();
+    const stream = await chain.invoke({
+      chat_history: formattedPreviousMessages.join("\n"),
+      input: currentMessageContent,
+    });
 
-  const urlVoice = await textToSpeech(llmResponse, data.vocalId);
+    const llmResponse = stream.content.toString().trim();
 
-  console.log("urlVoiceJson", urlVoice);
+    const urlVoice = await textToSpeech(llmResponse, data.vocalId);
 
-  return new NextResponse(llmResponse);
+    console.log("urlVoiceJson", urlVoice);
+
+    return new NextResponse(llmResponse);
+  } catch (error) {
+    console.error("Error:", error);
+    return new NextResponse(
+      "Une erreur s'est produite lors du traitement de votre requête.",
+      {
+        status: 500,
+      }
+    );
+  }
 }
