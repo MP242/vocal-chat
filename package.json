@@ -14,6 +14,7 @@
     "@langchain/mongodb": "^0.0.1",
     "@qruto/fetch-event-source": "^2.0.2",
     "ai": "^2.2.37",
+    "encoding": "^0.1.13",
     "langchain": "^0.1.23",
     "mongodb": "^6.3.0",
     "next": "13.4.9",
