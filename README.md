@@ -179,6 +179,7 @@ If you want to track the inputs/outputs of your LLM, you can do so from the Lang
 <!-- ROADMAP -->
 ## Roadmap
 
+- [ ] Modify the saving of messages through serverActions independent of the response from the /api/chat route.
 - [ ] Change STT & TTS with hugginFace model.
 - [ ] Fix Safari beug
 - [ ] Improve the transition between text reponse from LLM to TTS.
