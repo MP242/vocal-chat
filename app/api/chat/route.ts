@@ -27,7 +27,6 @@ export async function POST(req: Request) {
     const currentMessageContent = messages[messages.length - 1].content;
     const currentMessageRole = messages[messages.length - 1].role;
 
-
     //a remplacer par MongoDBChatMessageHistory
     if (messages.length > 1) {
       const previousAiMessageContent = messages[messages.length - 2].content;
@@ -42,7 +41,6 @@ export async function POST(req: Request) {
     }
     //a remplacer par MongoDBChatMessageHistory
     await saveMessageToDatabase(currentMessageRole, id, currentMessageContent);
-
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 

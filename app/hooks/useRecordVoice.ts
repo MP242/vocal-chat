@@ -33,6 +33,7 @@ export const useRecordVoice = () => {
       const text= await speechToText(base64data);
       // const text = await STT(base64data);
 
+
       console.log("from useRecordVoice text",text)
       const monText = text.toString();
       console.log("from useRecordVoice monText",monText)

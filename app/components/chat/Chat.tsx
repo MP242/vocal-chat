@@ -16,7 +16,7 @@ export const Chat = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // console.log(sessionIdRef.current);
+    console.log(sessionIdRef.current);
     sessionIdRef.current = uuidv4();
   }, []);
 
