@@ -7,6 +7,7 @@ import { Microphone } from "../microphone/microphone";
 import { useChat } from "ai/react";
 import { textToSpeech } from "@/app/serverActions/textToSpeech";
 import { TTS } from "@/app/serverActions/TTS";
+import { coquiTTS } from "@/app/serverActions/coquiTTS";
 
 
 export const Chat = () => {
@@ -60,8 +61,14 @@ export const Chat = () => {
   }, [messages]);
 
   const serverCreateVocal = async (text: string) => {
+    //openAI option
     // const response = await textToSpeech(text);
-    const response = await TTS(text);
+
+    //HugginFace Bark option
+    // const response = await TTS(text);
+    
+    //Coqui docker api option
+    const response = await coquiTTS(text);
 
     return response;
   };
