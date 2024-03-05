@@ -95,6 +95,17 @@ To set up the project locally, follow these simple instructions.
   docker exec -it “id contenerur” sh
   ollama pull mixtral
   ```
+* Coqui-AI SST serve with docker and french model
+
+  ```sh
+  docker run --rm -it -p 5002:5002 --gpus all --entrypoint /bin/bash ghcr.io/coqui-ai/tts
+  python3 TTS/server/server.py --list_models #To get the list of available models
+  python3 TTS/server/server.py --model_name tts_models/fr/mai/tacotron2-DDC  --use_cuda true
+  ```
+* Setup your own Flask API with whisper STT model in local
+
+  https://github.com/lablab-ai/whisper-api-flask/tree/main
+  
 * Mongodb Atlas
 
   Create your database and collection.
@@ -152,8 +163,16 @@ To set up the project locally, follow these simple instructions.
     From langsmith dashboard !
     ```js
     LANGCHAIN_PROJECT = 'ENTER YOUR LANGCHAIN_PROJECT';
-
-11. Start the project ! <br>
+    ```
+11. Enter your COQUI_AI_TTS_URL in `.env` & `.env.local` 
+    ```js
+    COQUI_AI_TTS_URL = 'ENTER YOUR COQUI_AI_TTS_URL';
+    ```
+12. Enter your WHISPER_AI_STT_URL in `.env` & `.env.local` 
+    ```js
+    WHISPER_AI_STT_URL = 'ENTER YOUR WHISPER_AI_STT_URL';
+    ```
+13. Start the project ! <br>
     For a launch in development mode
     ```js
     npm run dev
@@ -180,7 +199,7 @@ If you want to track the inputs/outputs of your LLM, you can do so from the Lang
 ## Roadmap
 
 - [ ] Modify the saving of messages through serverActions independent of the response from the /api/chat route.
-- [ ] Change STT & TTS with hugginFace model.
+- [x] Change STT & TTS with hugginFace model/or local model.
 - [ ] Fix Safari beug
 - [ ] Improve the transition between text reponse from LLM to TTS.
 - [ ] Add second LLMChain making stream great again on the front.

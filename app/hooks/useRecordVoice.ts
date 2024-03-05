@@ -3,6 +3,7 @@ import { blobToBase64 } from "@/app/actions/blobToBase64Action";
 import { createMediaStream } from "@/app/actions/createMediaStreamAction";
 import { useEffect, useState, useRef } from "react";
 import { speechToText } from "../serverActions/speechToText";
+import { whisperSTT } from "../serverActions/whisperSTT";
 
 
 export const useRecordVoice = () => {
@@ -30,8 +31,8 @@ export const useRecordVoice = () => {
 
   const getText = async (base64data:string) => {
     try {
-      const text= await speechToText(base64data);
-      // const text = await STT(base64data);
+      // const text= await speechToText(base64data);
+      const text = await whisperSTT(base64data);
 
 
       console.log("from useRecordVoice text",text)
