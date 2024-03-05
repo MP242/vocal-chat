@@ -72,6 +72,8 @@ This project was developed using several key technologies in the fields of artif
 * [OpenAI](https://platform.openai.com/docs/quickstart?context=node)
 * [MongoDB](https://www.mongodb.com/)
 * [Langsmith](https://langsmith.ai/)
+* [Coqui-AI](https://docs.coqui.ai/en/latest/docker_images.html)
+* [Whisper-API-Flask](https://github.com/lablab-ai/whisper-api-flask/tree/main)
 
 <p align="right">(<a href="#readme-top">Back to top</a>)</p>
 
