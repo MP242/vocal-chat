@@ -22,9 +22,7 @@ export async function TTS(data: string) {
     console.log("from TTS response",response.status)
     throw new Error(`TTS request failed with status ${response.status}`);
   }
-  // const result = await response.blob();
-  // console.log("from TTS result",result)
-  // return result;
+
   const buffer = await response.arrayBuffer();
   const decodedBuffer = Array.from(new Uint8Array(buffer))
 
