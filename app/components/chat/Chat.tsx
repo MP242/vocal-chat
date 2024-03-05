@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Microphone } from "../microphone/microphone";
 import { useChat } from "ai/react";
 import { textToSpeech } from "@/app/serverActions/textToSpeech";
+import { TTS } from "@/app/serverActions/TTS";
+
 
 export const Chat = () => {
   const sessionIdRef = useRef<string>(uuidv4());
@@ -23,7 +25,7 @@ export const Chat = () => {
   });
 
   useEffect(() => {
-    // console.log("L26 chatCompo - text", text);
+    console.log("L26 chatCompo - text", text);
     if (text) {
       const input = text.trim();
       append({ role: "user", content: input }, { data: { vocalId: vocalId } });
@@ -58,7 +60,9 @@ export const Chat = () => {
   }, [messages]);
 
   const serverCreateVocal = async (text: string) => {
-    const response = await textToSpeech(text);
+    // const response = await textToSpeech(text);
+    const response = await TTS(text);
+
     return response;
   };
 
