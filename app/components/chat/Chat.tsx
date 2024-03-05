@@ -8,6 +8,7 @@ import { useChat } from "ai/react";
 import { textToSpeech } from "@/app/serverActions/textToSpeech";
 import { TTS } from "@/app/serverActions/TTS";
 
+
 export const Chat = () => {
   const sessionIdRef = useRef<string>(uuidv4());
   const { startRecording, stopRecording, text } = useRecordVoice();
@@ -15,7 +16,7 @@ export const Chat = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log(sessionIdRef.current);
+    // console.log(sessionIdRef.current);
     sessionIdRef.current = uuidv4();
   }, []);
 
@@ -61,6 +62,7 @@ export const Chat = () => {
   const serverCreateVocal = async (text: string) => {
     // const response = await textToSpeech(text);
     const response = await TTS(text);
+
     return response;
   };
 
