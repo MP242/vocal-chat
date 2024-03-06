@@ -73,7 +73,7 @@ This project was developed using several key technologies in the fields of artif
 * [MongoDB](https://www.mongodb.com/)
 * [Langsmith](https://langsmith.ai/)
 * [Coqui-AI](https://docs.coqui.ai/en/latest/docker_images.html)
-* [Whisper-API-Flask](https://github.com/lablab-ai/whisper-api-flask/tree/main)
+* [Whisper-API-Flask](https://github.com/MP242/WHISPER-FLASK-API)
 
 <p align="right">(<a href="#readme-top">Back to top</a>)</p>
 
@@ -89,6 +89,10 @@ To set up the project locally, follow these simple instructions.
 * npm
   ```sh
   npm install npm@latest -g
+  ```
+* docker
+  ```sh
+   brew install docker
   ```
 * Ollama serve with docker
 
@@ -106,7 +110,12 @@ To set up the project locally, follow these simple instructions.
   ```
 * Setup your own Flask API with whisper STT model in local
 
-  https://github.com/lablab-ai/whisper-api-flask/tree/main
+  From https://github.com/MP242/WHISPER-FLASK-API
+  ```sh
+  git clone https://github.com/MP242/WHISPER-FLASK-API.git
+  docker build -t whisper-api .
+  docker run -p 5000:5000 whisper-api
+  ```
   
 * Mongodb Atlas
 
