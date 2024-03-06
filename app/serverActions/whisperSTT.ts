@@ -13,7 +13,7 @@ export const whisperSTT = async (base64Audio: string): Promise<string> => {
   const file = await toFile(audioBuffer, "audio.wav");
 
   const formData = new FormData();
-  formData.append("file", file, "audio.wav");
+  formData.append("file", file as unknown as Blob, "audio.wav");
 
   try {
     const response = await fetch(WHISPER_AI_STT_URL + "/whisper", {
